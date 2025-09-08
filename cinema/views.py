@@ -1,10 +1,8 @@
 from datetime import datetime
 
 from django.db.models import F, Count
-from django.template.context_processors import request
 from rest_framework import viewsets, mixins, permissions
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.decorators import authentication_classes
 from rest_framework.pagination import PageNumberPagination
 
 from cinema.models import Genre, Actor, CinemaHall, Movie, MovieSession, Order
@@ -120,9 +118,9 @@ class MovieSessionViewSet(
         MovieSession.objects.all()
         .select_related("movie", "cinema_hall")
         .annotate(
-            tickets_available=F("cinema_hall__rows")
-                              * F("cinema_hall__seats_in_row")
-                              - Count("tickets")
+            tickets_available=F("cinema_hall__rows") * F(
+                "cinema_hall__seats_in_row"
+            ) - Count("tickets")
         )
     )
     serializer_class = MovieSessionSerializer
