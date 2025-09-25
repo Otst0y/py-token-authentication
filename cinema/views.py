@@ -33,7 +33,6 @@ class GenreViewSet(
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminOrIfAuthenticatedReadOnly]
 
 
 class ActorViewSet(
@@ -44,7 +43,6 @@ class ActorViewSet(
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminOrIfAuthenticatedReadOnly]
 
 
 class CinemaHallViewSet(
@@ -55,7 +53,6 @@ class CinemaHallViewSet(
     queryset = CinemaHall.objects.all()
     serializer_class = CinemaHallSerializer
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminOrIfAuthenticatedReadOnly]
 
 
 class MovieViewSet(
@@ -67,7 +64,6 @@ class MovieViewSet(
     queryset = Movie.objects.prefetch_related("genres", "actors")
     serializer_class = MovieSerializer
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminOrIfAuthenticatedReadOnly]
 
     @staticmethod
     def _params_to_ints(qs):
@@ -114,7 +110,6 @@ class MovieSessionViewSet(
     viewsets.GenericViewSet
 ):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminOrIfAuthenticatedReadOnly]
 
     queryset = (
         MovieSession.objects.all()
@@ -180,12 +175,11 @@ class OrderViewSet(
         return OrderSerializer
 
     def perform_create(self, serializer):
-        if self.request.user.is_authenticated:
-            serializer.save(user=self.request.user)
+        serializer.save(user=self.request.user)
 
     def get_permissions(self):
         if self.action == "create":
-            permission_classes = [IsAuthenticated]
+            perms = [IsAuthenticated]
         else:
-            permission_classes = [IsAdminOrIfAuthenticatedReadOnly]
-        return [permission() for permission in permission_classes]
+            perms = [IsAdminOrIfAuthenticatedReadOnly]
+        return [permission() for permission in perms]
