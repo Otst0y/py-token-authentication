@@ -1,9 +1,7 @@
 from datetime import datetime
 
 from django.db.models import F, Count
-from rest_framework import viewsets, mixins, permissions
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.decorators import permission_classes
+from rest_framework import viewsets, mixins
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 
@@ -32,7 +30,6 @@ class GenreViewSet(
 ):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    authentication_classes = [TokenAuthentication]
 
 
 class ActorViewSet(
@@ -42,7 +39,6 @@ class ActorViewSet(
 ):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
-    authentication_classes = [TokenAuthentication]
 
 
 class CinemaHallViewSet(
@@ -52,7 +48,6 @@ class CinemaHallViewSet(
 ):
     queryset = CinemaHall.objects.all()
     serializer_class = CinemaHallSerializer
-    authentication_classes = [TokenAuthentication]
 
 
 class MovieViewSet(
@@ -63,7 +58,6 @@ class MovieViewSet(
 ):
     queryset = Movie.objects.prefetch_related("genres", "actors")
     serializer_class = MovieSerializer
-    authentication_classes = [TokenAuthentication]
 
     @staticmethod
     def _params_to_ints(qs):
@@ -109,7 +103,6 @@ class MovieSessionViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet
 ):
-    authentication_classes = [TokenAuthentication]
 
     queryset = (
         MovieSession.objects.all()
@@ -157,7 +150,6 @@ class OrderViewSet(
     mixins.CreateModelMixin,
     viewsets.GenericViewSet
 ):
-    authentication_classes = [TokenAuthentication]
 
     queryset = Order.objects.prefetch_related(
         "tickets__movie_session__movie", "tickets__movie_session__cinema_hall"
